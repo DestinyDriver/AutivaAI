@@ -1,9 +1,18 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
+import dynamic from "next/dynamic";
+
+// Dynamically import Canvas to avoid SSR issues
+const Canvas = dynamic(
+  () => import("@react-three/fiber").then((mod) => mod.Canvas),
+  { ssr: false },
+);
+
+const Model = dynamic(() => import("./DNAModel"), { ssr: false });
 
 export default function Hero() {
   const containerRef = useRef(null);
@@ -13,6 +22,7 @@ export default function Hero() {
   const descriptionRef = useRef(null);
   const ctasRef = useRef(null);
   const visualRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -65,15 +75,6 @@ export default function Hero() {
         { opacity: 1, y: 0, duration: 1, ease: "power2.out" },
         0.3,
       );
-
-      // Floating animation for visual element
-      gsap.to(visualRef.current, {
-        y: -15,
-        duration: 4,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
     });
 
     return () => ctx.revert();
@@ -178,7 +179,23 @@ export default function Hero() {
           </div>
 
           {/* RIGHT COLUMN — VISUAL ELEMENT */}
-          <div></div>
+          <div
+            ref={visualRef}
+            className="hidden lg:flex items-center justify-center mt-12 lg:mt-0 h-96 lg:h-full"
+          >
+            <div
+              className="w-full h-full rounded-3xl overflow-hidden "
+              onPointerEnter={() => setIsHovered(true)}
+              onPointerLeave={() => setIsHovered(false)}
+            >
+              <Canvas
+                camera={{ position: [0, 0, 3], fov: 50 }}
+                style={{ width: "100%", height: "100%" }}
+              >
+                <Model hover={isHovered} />
+              </Canvas>
+            </div>
+          </div>
         </div>
       </div>
     </section>
