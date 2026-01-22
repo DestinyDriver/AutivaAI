@@ -2,35 +2,89 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Mail, Lock, Github, Check, AlertCircle } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  Github,
+  Check,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 import AuthCard from "@/app/components/AuthCard";
 import { FcGoogle } from "react-icons/fc";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const isPasswordValid = password.length >= 8;
   const isPasswordMatch = password === confirmPassword && password.length > 0;
   const isFormValid =
     email && password && confirmPassword && isPasswordValid && isPasswordMatch;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid) return;
 
+    setError("");
+    setSuccess("");
     setIsSubmitting(true);
-    // Frontend only - no actual submission
-    setTimeout(() => setIsSubmitting(false), 1000);
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, confirmPassword }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess(
+          "Account created! Check your email to verify your account...",
+        );
+        setTimeout(() => {
+          router.push(
+            `/auth/verify-pending?email=${encodeURIComponent(email)}`,
+          );
+        }, 1500);
+      } else {
+        setError(data.error || "Registration failed");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <AuthCard subtitle="Create your NeuroLensAI account in seconds">
+      {/* Error Alert */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
+
+      {/* Success Alert */}
+      {success && (
+        <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-3">
+          <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-emerald-700">{success}</p>
+        </div>
+      )}
+
       {/* Email, Password, and Confirm Password Form */}
       <form onSubmit={handleSubmit} className="space-y-2">
         {/* Email Field */}
