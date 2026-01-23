@@ -15,6 +15,14 @@
   --font-size-heading: clamp(2rem, 12vw, 9rem);
   --font-size-tagline: clamp(1rem, 6vw, 5rem);
   --font-size-body: clamp(0.875rem, 2vw, 1.25rem);
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
 @theme inline {
