@@ -415,6 +415,13 @@ export default function ScreeningPage() {
                               "flex justify-center items-center bg-red-400 hover:bg-red-500"
                             }
                             onClick={() => {
+                              URL.revokeObjectURL(photoURL);
+                              URL.revokeObjectURL(videoURL);
+                              setPhotoBlob(null);
+                              setPhotoURL(null);
+                              setVideoBlob(null);
+                              setVideoURL(null);
+                              setEegFile(null);
                               closeCamera();
                               setCurrentStep(currentStep - 1);
                             }}
@@ -437,7 +444,7 @@ export default function ScreeningPage() {
                             <Button
                               variant="outline"
                               onClick={() => {
-                                // URL.revokeObjectURL(photoURL);
+                                URL.revokeObjectURL(photoURL);
                                 // openCamera();
                                 setPhotoURL(null);
                                 setPhotoBlob(null);
