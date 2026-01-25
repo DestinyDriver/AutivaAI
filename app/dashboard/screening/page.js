@@ -5,14 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import clsx from "clsx";
-import {
-  Upload,
-  Camera,
-  Video,
-  ChevronRight,
-  ChevronLeft,
-  LogOut,
-} from "lucide-react";
+import { CheckCircle2, XCircle, Loader2, RefreshCcw } from "lucide-react";
 import ScreeningHero from "@/app/components/ScreeningHero";
 import ScreeningImage from "@/app/components/ScreeningImage";
 import ScreeningVideo from "@/app/components/ScreeningVideo";
@@ -53,6 +46,27 @@ export default function ScreeningPage() {
   //eeg
   const [eegFile, setEegFile] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+
+  const [progress, setProgress] = useState({
+    getCount: "idle", // idle | loading | success | error
+    video: "idle",
+    image: "idle",
+    eeg: "idle",
+  });
+  const [errorStep, setErrorStep] = useState(null); // "getCount" | "video" | "image" | "eeg"
+
+  function StatusIcon({ status }) {
+    if (status === "loading")
+      return <Loader2 className="h-4 w-4 animate-spin" />;
+    if (status === "success")
+      return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+    if (status === "error") return <XCircle className="h-4 w-4 text-red-500" />;
+    return (
+      <div className="h-4 w-4 rounded-full border border-muted-foreground/40" />
+    );
+  }
+
   const screeningProps = {
     currentStep,
     setCurrentStep,
@@ -84,7 +98,28 @@ export default function ScreeningPage() {
     const data = await res.json();
 
     if (!res.ok) {
+      if (url === "/api/upload/video") {
+        setProgress((p) => ({ ...p, video: "error" }));
+        setErrorStep("video");
+      } else if (url === "/api/upload/eeg") {
+        setProgress((p) => ({ ...p, eeg: "error" }));
+        setErrorStep("eeg");
+      } else {
+        setProgress((p) => ({ ...p, image: "error" }));
+        setErrorStep("image");
+      }
       throw new Error(data.error || `Upload Failed at ${url}`);
+    }
+
+    if (url === "/api/upload/video") {
+      setProgress((p) => ({ ...p, video: "success" }));
+      // setErrorStep("video");
+    } else if (url === "/api/upload/eeg") {
+      setProgress((p) => ({ ...p, eeg: "error" }));
+      setErrorStep("eeg");
+    } else {
+      setProgress((p) => ({ ...p, image: "success" }));
+      // setErrorStep("image");
     }
 
     return data.key;
@@ -96,25 +131,48 @@ export default function ScreeningPage() {
         toast.error("First upload all required files");
         return;
       }
+      setCurrentStep(4);
+
+      setLoading(true);
+      setErrorStep(null);
+      setProgress({
+        getCount: "loading",
+        video: "idle",
+        image: "idle",
+        eeg: "idle",
+      });
       const res = await fetch(`/api/get-count?userId=${userId}`);
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error("Something Went Wrong");
-        console.error("Error at /get-count ");
-        return;
+        setProgress((p) => ({ ...p, getCount: "error" }));
+        setErrorStep("getCount");
+        throw new Error(data?.error || "Get count failed");
       }
 
       setRecordCount(data.count);
+      setProgress((p) => ({ ...p, getCount: "success" }));
 
+      setProgress((p) => ({ ...p, video: "loading" }));
       const videoKey = await uploadFile("/api/upload/video", videoBlob);
+      setProgress((p) => ({ ...p, video: "success" }));
       alert(videoKey);
+
+      setProgress((p) => ({ ...p, image: "loading" }));
       const imageKey = await uploadFile("/api/upload/image", photoBlob);
+      setProgress((p) => ({ ...p, image: "success" }));
       alert(imageKey);
+
+      setProgress((p) => ({ ...p, eeg: "loading" }));
       const eegKey = await uploadFile("/api/upload/eeg", eegFile);
+      setProgress((p) => ({ ...p, eeg: "success" }));
       alert(eegKey);
+
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       toast.error(`${err.message}`);
+      toast.error("Something went Wrong.");
       console.error("Error at /get-count :", err.message);
       return;
     }
@@ -196,19 +254,74 @@ export default function ScreeningPage() {
                 )}
               </Card>
             ) : (
-              // FINAL RESULT VIEW
-              <div className="h-full flex items-center justify-center">
-                <h1 className="text-4xl font-bold tracking-wide">
-                  RESULT IS HERE {recordCount}
-                </h1>
-                <Button
-                  onClick={() => {
-                    fetchResult();
-                  }}
-                >
-                  Submit
-                </Button>
-              </div>
+              <Card className="h-full w-full flex flex-col items-center justify-center gap-6 p-6">
+                {loading || errorStep ? (
+                  <>
+                    {/* Loader */}
+                    <div className="flex flex-col items-center gap-3">
+                      <Loader2 className="h-10 w-10 animate-spin" />
+                      <p className="text-sm text-muted-foreground">
+                        Uploading your screening files...
+                      </p>
+                    </div>
+
+                    {/* Progress Box */}
+                    <div className="w-full max-w-md rounded-xl border bg-muted/30 p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Get Count</span>
+                        <StatusIcon status={progress.getCount} />
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Upload Video</span>
+                        <StatusIcon status={progress.video} />
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Upload Image</span>
+                        <StatusIcon status={progress.image} />
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Upload EEG CSV</span>
+                        <StatusIcon status={progress.eeg} />
+                      </div>
+
+                      {/* Retry Button (only if error happened) */}
+                      {errorStep && (
+                        <Button
+                          variant="outline"
+                          className="w-full mt-2"
+                          onClick={fetchResult}
+                        >
+                          <RefreshCcw className="h-4 w-4 mr-2" />
+                          Retry Failed Step
+                        </Button>
+                      )}
+                    </div>
+
+                    {errorStep && (
+                      <Button
+                        onClick={() => {
+                          setCurrentStep(0);
+                        }}
+                      >
+                        Retry
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  // ✅ After finished show result card
+                  <div className="text-center">
+                    <h1 className="text-4xl font-bold tracking-wide">
+                      RESULT IS HERE {recordCount}
+                    </h1>
+                    <p className="text-muted-foreground mt-2">
+                      (empty result card for now)
+                    </p>
+                  </div>
+                )}
+              </Card>
             )}
           </main>
         </>

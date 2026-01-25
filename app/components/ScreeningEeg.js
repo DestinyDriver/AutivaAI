@@ -103,8 +103,7 @@ const ScreeningEeg = ({
 
         <Button
           onClick={() => {
-            setCurrentStep(4);
-            // fetchResult();
+            fetchResult();
           }}
           disabled={!eegFile}
         >
