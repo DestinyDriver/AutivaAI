@@ -11,6 +11,9 @@ import {
   ChevronRight,
   ChevronLeft,
   LogOut,
+  CameraOff,
+  Aperture,
+  RotateCcw,
 } from "lucide-react";
 
 const ScreeningImage = ({
@@ -165,6 +168,7 @@ const ScreeningImage = ({
                 onClick={capturePhoto}
                 disabled={!stream}
               >
+                <Aperture className="h-4 w-4" />
                 Capture
               </Button>
             )}
@@ -179,12 +183,14 @@ const ScreeningImage = ({
                   setPhotoBlob(null);
                 }}
               >
+                <RotateCcw className="size-4"></RotateCcw>
                 Retake
               </Button>
             )}
 
             {stream && (
               <Button variant="outline" onClick={closeCamera}>
+                <CameraOff className="size-4"></CameraOff>
                 Close Camera
               </Button>
             )}
@@ -209,6 +215,7 @@ const ScreeningImage = ({
                   fileInputRef.current?.click();
                 }}
               >
+                <Upload className="size-4"></Upload>
                 Upload Image
               </Button>
             </label>

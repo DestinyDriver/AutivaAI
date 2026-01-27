@@ -10,6 +10,8 @@ import {
   ShieldCheck,
   FileText,
   HeartPulse,
+  SquareArrowOutDownRight,
+  SquareArrowOutUpRight,
 } from "lucide-react";
 
 const ScreeningHero = ({ setCurrentStep }) => {
@@ -112,6 +114,7 @@ const ScreeningHero = ({ setCurrentStep }) => {
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <Link href="/dashboard/reports">
                 <Button variant="outline" className="w-full sm:w-auto">
+                  <SquareArrowOutUpRight className="size-4"></SquareArrowOutUpRight>
                   Review Past Reports
                 </Button>
               </Link>

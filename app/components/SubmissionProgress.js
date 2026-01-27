@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCcw } from "lucide-react";
+import { Loader2, RefreshCcw, RotateCcw, Undo2 } from "lucide-react";
 import React from "react";
 
 const SubmissionProgress = ({
@@ -8,6 +8,7 @@ const SubmissionProgress = ({
   progress,
   errorStep,
   setCurrentStep,
+  clearBlob,
 }) => {
   return (
     <>
@@ -103,9 +104,13 @@ const SubmissionProgress = ({
 
           <Button
             variant="ghost"
-            className="w-full text-sm text-muted-foreground"
-            onClick={() => setCurrentStep(0)}
+            className="w-full text-sm text-white hover:text-white bg-red-400 hover:bg-red-500"
+            onClick={() => {
+              clearBlob();
+              setCurrentStep(0);
+            }}
           >
+            <RotateCcw className="size-4 mr-2"></RotateCcw>
             Restart Screening
           </Button>
         </div>

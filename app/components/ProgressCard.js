@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-react";
-import React from "react";
+import { CheckCircle2, SquareArrowOutUpRight, Undo2 } from "lucide-react";
+import React, { useEffect } from "react";
 
-const ProgressCard = () => {
+const ProgressCard = ({ clearBlob }) => {
+  useEffect(() => {
+    clearBlob();
+    // alert("Blob cleared");
+  }, []);
+
   return (
     <div className="w-full max-w-xl text-center space-y-5">
       {/* Success Icon */}
@@ -50,6 +55,7 @@ const ProgressCard = () => {
           // navigate to report page
         }}
       >
+        <SquareArrowOutUpRight className="size-4"></SquareArrowOutUpRight>
         View Screening Report
       </Button>
 

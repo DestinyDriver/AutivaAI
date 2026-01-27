@@ -187,7 +187,24 @@ export default function ScreeningPage() {
     }
   }
 
-  function clearBlob() {}
+  function clearBlob() {
+    if (photoURL) URL.revokeObjectURL(photoURL);
+    if (videoURL) URL.revokeObjectURL(videoURL);
+    setPhotoBlob(null);
+    setVideoBlob(null);
+    setEegFile(null);
+    setPhotoURL(null);
+    setVideoURL(null);
+    setProgress({
+      getCount: "idle",
+      video: "idle",
+      image: "idle",
+      eeg: "idle",
+      analysis: "idle",
+    });
+    setErrorStep(null);
+    setLoading(false);
+  }
 
   const eegProps = { fetchResult, ...screeningProps };
 
@@ -274,10 +291,11 @@ export default function ScreeningPage() {
                       progress,
                       errorStep,
                       setCurrentStep,
+                      clearBlob,
                     }}
                   ></SubmissionProgress>
                 ) : (
-                  <ProgressCard></ProgressCard>
+                  <ProgressCard {...{ clearBlob }}></ProgressCard>
                 )}
               </Card>
             )}

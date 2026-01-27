@@ -10,6 +10,8 @@ import {
   ChevronRight,
   ChevronLeft,
   LogOut,
+  CircleCheck,
+  Trash2,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -96,6 +98,7 @@ const ScreeningEeg = ({
 
           {eegFile && (
             <Button variant="outline" onClick={() => setEegFile(null)}>
+              <Trash2 className="size-4"></Trash2>
               Remove File
             </Button>
           )}
@@ -108,6 +111,7 @@ const ScreeningEeg = ({
           disabled={!eegFile}
         >
           Submit
+          <ChevronRight className="size-4"></ChevronRight>
         </Button>
       </div>
 

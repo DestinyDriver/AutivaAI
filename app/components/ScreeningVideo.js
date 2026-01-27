@@ -11,6 +11,11 @@ import {
   ChevronRight,
   ChevronLeft,
   LogOut,
+  Eye,
+  VideoOff,
+  Circle,
+  X,
+  RotateCcw,
 } from "lucide-react";
 
 const ScreeningVideo = ({
@@ -191,7 +196,11 @@ const ScreeningVideo = ({
         ) : (
           <div className="flex flex-col items-center gap-4 ">
             <Video className="size-10 text-white" />
-            <Button variant="outline" onClick={openVideoCamera}>
+            <Button
+              variant="outline"
+              onClick={openVideoCamera}
+              className={"flex justify-center items-center"}
+            >
               Open Camera
             </Button>
           </div>
@@ -216,7 +225,12 @@ const ScreeningVideo = ({
 
           {/* RECORD BUTTON */}
           {!videoURL && videoStream && !isRecording && (
-            <Button variant="outline" onClick={startRecording}>
+            <Button
+              variant="outline"
+              onClick={startRecording}
+              className={"flex items-center"}
+            >
+              <Circle className="size-4 "></Circle>
               Record 10s
             </Button>
           )}
@@ -225,10 +239,11 @@ const ScreeningVideo = ({
           {isRecording && (
             <>
               <Button variant="destructive" disabled>
-                ● Recording {recordingTime}s
+                <span className="mb-[0.7px]">●</span> Recording {recordingTime}s
               </Button>
 
               <Button variant="outline" onClick={exitRecording}>
+                <X className="size-4"></X>
                 Exit Recording
               </Button>
             </>
@@ -244,6 +259,7 @@ const ScreeningVideo = ({
                 setVideoBlob(null);
               }}
             >
+              <RotateCcw className="size-4"></RotateCcw>
               Retake
             </Button>
           )}
@@ -251,6 +267,7 @@ const ScreeningVideo = ({
           {/* CLOSE CAMERA */}
           {videoStream && !isRecording && (
             <Button variant="outline" onClick={stopVideoCamera}>
+              <VideoOff className="size-4"></VideoOff>
               Close Camera
             </Button>
           )}
@@ -273,6 +290,7 @@ const ScreeningVideo = ({
             onClick={() => videoInputRef.current?.click()}
             disabled={isRecording || videoStream}
           >
+            <Upload className="size-4"></Upload>
             Upload Video
           </Button>
         </div>
