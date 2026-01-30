@@ -166,15 +166,15 @@ export default function Hero() {
                   href="https://www.github.com/adi13apr"
                   className="hover:underline"
                 >
-                  adi13apr
+                  Adi13apr
                 </a>
                 <span>&</span>
 
                 <a
-                  href="https://www.github.com/Ayush-iiitkota"
+                  href="https://www.github.com/sauraviiitk"
                   className="hover:underline"
                 >
-                  Ayush-iiitkota
+                  Sauraviiitk
                 </a>
               </div>
             </p>
