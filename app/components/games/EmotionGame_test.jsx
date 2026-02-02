@@ -1,10 +1,10 @@
-
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import {
   CheckCircle2,
+  ChevronLeft,
   ChevronRight,
   HelpCircle,
   RotateCcw,
@@ -39,41 +39,122 @@ const EMOTIONS = [
   {
     id: "happy",
     name: "Happy",
-    gif: "/images/emotion/happy.gif",
-    sound: "/sounds/emotion/happy.mp3",
+    gif: "/images/emotions/happy.gif",
+    sound: "/sounds/emotions/happy.mp3",
+    color: "yellow",
+    emoji: "😊",
     options: [
-      { id: "happy-1", img: "/images/emotion/frames/happy/1.png" },
-      { id: "happy-2", img: "/images/emotion/frames/happy/2.png" },
-      { id: "happy-3", img: "/images/emotion/frames/happy/3.png" },
-      { id: "happy-4", img: "/images/emotion/frames/happy/4.png" },
+      { id: "happy", name: "Happy", img: "/images/emotions/happy.gif" },
+      { id: "calm", name: "Calm", img: "/images/emotions/Calim.gif" },
+      { id: "funny", name: "Funny", img: "/images/emotions/Funny_1.gif" },
+      { id: "surprised", name: "Surprised", img: "/images/emotions/Surprised.gif" },
     ],
-    correctOptionId: "happy-2",
+    correctOptionId: "happy",
   },
   {
     id: "sad",
     name: "Sad",
-    gif: "/images/emotion/sad.gif",
-    sound: "/sounds/emotion/sad.mp3",
+    gif: "/images/emotions/Sad_2.gif",
+    sound: "/sounds/emotions/sad.mp3",
+    color: "blue",
+    emoji: "😢",
     options: [
-      { id: "sad-1", img: "/images/emotion/frames/sad/1.png" },
-      { id: "sad-2", img: "/images/emotion/frames/sad/2.png" },
-      { id: "sad-3", img: "/images/emotion/frames/sad/3.png" },
-      { id: "sad-4", img: "/images/emotion/frames/sad/4.png" },
+      { id: "sad", name: "Sad", img: "/images/emotions/Sad_2.gif" },
+      { id: "cry", name: "Cry", img: "/images/emotions/Cry_1.gif" },
+      { id: "frighten", name: "Frighten", img: "/images/emotions/Frighten.gif" },
+      { id: "angry", name: "Angry", img: "/images/emotions/Angry.png" },
     ],
-    correctOptionId: "sad-3",
+    correctOptionId: "sad",
   },
   {
     id: "angry",
     name: "Angry",
-    gif: "/images/emotion/angry.gif",
-    sound: "/sounds/emotion/angry.mp3",
+    gif: "/images/emotions/Angry.png",
+    sound: "/sounds/emotions/Angry.mp3",
+    color: "red",
+    emoji: "😠",
     options: [
-      { id: "angry-1", img: "/images/emotion/frames/angry/1.png" },
-      { id: "angry-2", img: "/images/emotion/frames/angry/2.png" },
-      { id: "angry-3", img: "/images/emotion/frames/angry/3.png" },
-      { id: "angry-4", img: "/images/emotion/frames/angry/4.png" },
+      { id: "angry", name: "Angry", img: "/images/emotions/Angry.png" },
+      { id: "frighten", name: "Frighten", img: "/images/emotions/Frighten.gif" },
+      { id: "cry", name: "Cry", img: "/images/emotions/Cry_1.gif" },
+      { id: "calm", name: "Calm", img: "/images/emotions/Calim.gif" },
     ],
-    correctOptionId: "angry-1",
+    correctOptionId: "angry",
+  },
+  {
+    id: "surprised",
+    name: "Surprised",
+    gif: "/images/emotions/Surprised.gif",
+    sound: "/sounds/emotions/surprised.mp3",
+    color: "purple",
+    emoji: "😲",
+    options: [
+      { id: "surprised", name: "Surprised", img: "/images/emotions/Surprised.gif" },
+      { id: "frighten", name: "Frighten", img: "/images/emotions/Frighten.gif" },
+      { id: "happy", name: "Happy", img: "/images/emotions/happy.gif" },
+      { id: "funny", name: "Funny", img: "/images/emotions/Funny_1.gif" },
+    ],
+    correctOptionId: "surprised",
+  },
+  {
+    id: "calm",
+    name: "Calm",
+    gif: "/images/emotions/Calim.gif",
+    sound: "/sounds/emotions/calm.mp3",
+    color: "green",
+    emoji: "😌",
+    options: [
+      { id: "calm", name: "Calm", img: "/images/emotions/Calim.gif" },
+      { id: "sad", name: "Sad", img: "/images/emotions/Sad_2.gif" },
+      { id: "happy", name: "Happy", img: "/images/emotions/happy.gif" },
+      { id: "funny", name: "Funny", img: "/images/emotions/Funny_1.gif" },
+    ],
+    correctOptionId: "calm",
+  },
+  {
+    id: "cry",
+    name: "Cry",
+    gif: "/images/emotions/Cry_1.gif",
+    sound: "/sounds/emotions/crying.mp3",
+    color: "indigo",
+    emoji: "😭",
+    options: [
+      { id: "cry", name: "Cry", img: "/images/emotions/Cry_1.gif" },
+      { id: "sad", name: "Sad", img: "/images/emotions/Sad_2.gif" },
+      { id: "frighten", name: "Frighten", img: "/images/emotions/Frighten.gif" },
+      { id: "angry", name: "Angry", img: "/images/emotions/Angry.png" },
+    ],
+    correctOptionId: "cry",
+  },
+  {
+    id: "frighten",
+    name: "Frighten",
+    gif: "/images/emotions/Frighten.gif",
+    sound: "/sounds/emotions/frightened.mp3",
+    color: "orange",
+    emoji: "😨",
+    options: [
+      { id: "frighten", name: "Frighten", img: "/images/emotions/Frighten.gif" },
+      { id: "surprised", name: "Surprised", img: "/images/emotions/Surprised.gif" },
+      { id: "cry", name: "Cry", img: "/images/emotions/Cry_1.gif" },
+      { id: "angry", name: "Angry", img: "/images/emotions/Angry.png" },
+    ],
+    correctOptionId: "frighten",
+  },
+  {
+    id: "funny",
+    name: "Funny",
+    gif: "/images/emotions/Funny_1.gif",
+    sound: "/sounds/emotions/funny.mp3",
+    color: "pink",
+    emoji: "😂",
+    options: [
+      { id: "funny", name: "Funny", img: "/images/emotions/Funny_1.gif" },
+      { id: "happy", name: "Happy", img: "/images/emotions/happy.gif" },
+      { id: "surprised", name: "Surprised", img: "/images/emotions/Surprised.gif" },
+      { id: "calm", name: "Calm", img: "/images/emotions/Calim.gif" },
+    ],
+    correctOptionId: "funny",
   },
 ];
 
@@ -169,10 +250,13 @@ export default function EmotionGame() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5" />
-            <h1 className="text-xl sm:text-2xl font-semibold">
-              Emotion Therapy Match Game
-            </h1>
+
+            <Button className={"bg-red-400/80 hover:bg-red-500"}>
+                <ChevronLeft className="size-4 "></ChevronLeft>
+                Exit
+            </Button>
+            
+            
           </div>
 
           <div className="flex items-center gap-2">
@@ -183,22 +267,14 @@ export default function EmotionGame() {
               variant="outline"
               className="text-sm flex items-center gap-2"
             >
-              <Trophy className="w-4 h-4" />
+              <Trophy className="w-4 h-4 text-yellow-400" />
               Score: {score.correct}
             </Badge>
           </div>
         </div>
 
         {/* Progress */}
-        <Card className="rounded-2xl">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between text-sm mb-2">
-              <span className="opacity-80">Progress</span>
-              <span className="font-medium">{progressValue}%</span>
-            </div>
-            <Progress value={progressValue} />
-          </CardContent>
-        </Card>
+        
 
         {/* Main Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6">

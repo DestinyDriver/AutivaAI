@@ -102,17 +102,14 @@ const data = {
       icon: HeartHandshake,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Games",
+          url: "/dashboard/games",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Parent Modules",
+          url: "/dashboard/parent-modules",
         },
-        {
-          title: "Quantum",
-          url: "#",
-        },
+       
       ],
     },
 
